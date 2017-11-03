@@ -26,6 +26,13 @@ public class SeamCarver {
         for (int row = 0; row < H; row++) {
             for (int col = 0; col < W; col++) {
                 energy[col][row] = energy(col, row);
+            }
+        }
+    }
+    private void initializeDistTo() {
+        // initialize distTo array
+        for (int row = 0; row < H; row++) {
+            for (int col = 0; col < W; col++) {
                 distTo[col][row] = Double.POSITIVE_INFINITY;
             }
         }
@@ -76,7 +83,11 @@ public class SeamCarver {
     }
 
     public Picture picture() {                         // current picture
-        return this.picture;
+        Picture ret = new Picture(width(), height());
+        for (int col = 0; col < width(); col++)
+            for (int row = 0; row < height(); row++)
+                ret.set(col, row, working.get(col, row));
+        return ret;
     }
 
     public     int width() {                           // width of current picture
@@ -111,6 +122,7 @@ public class SeamCarver {
     }
 
     public   int[] findVerticalSeam() {                 // sequence of indices for vertical seam
+        initializeDistTo();
         updateDistToVertical();
 
         // find min val at the bottom line
@@ -151,22 +163,16 @@ public class SeamCarver {
                 energy[col][row] = energy[col+1][row];
             energy[width()-1][row] = 1000;
         }
-
-        // initialize distTo array
-        for (int row = 0; row < H; row++) {
-            for (int col = 0; col < W; col++) {
-                distTo[col][row] = Double.POSITIVE_INFINITY;
-            }
-        }
     }
 
     public   int[] findHorizontalSeam() {               // sequence of indices for horizontal seam
+        initializeDistTo();
         updateDistToHorizontal();
         
         // find min val at the rightmost line
         double min_val = Double.POSITIVE_INFINITY;
         int min_row = -1;
-        for (int row = height()-1; row >= 0; row--) {
+        for (int row = 0; row < height(); row++) {
             if (min_val > distTo[width()-1][row]) {
                 min_val = distTo[width()-1][row];
                 min_row = row;
@@ -200,13 +206,6 @@ public class SeamCarver {
             for (int row = seam[col]+1; row < height()-1; row++)
                 energy[col][row] = energy[col][row+1];
             energy[col][height()-1] = 1000;
-        }
-
-        // initialize distTo array
-        for (int row = 0; row < H; row++) {
-            for (int col = 0; col < W; col++) {
-                distTo[col][row] = Double.POSITIVE_INFINITY;
-            }
         }
     }
 
@@ -249,27 +248,20 @@ public class SeamCarver {
     
     public static void main(String[] args) {
         // Picture picture = new Picture(args[0]);
-        Picture picture = new Picture("seam/5x6.png");
+        Picture picture = new Picture("seam/chameleon.png");
         SeamCarver carver = new SeamCarver(picture);
         
         System.out.printf("%d-by-%d\n", carver.width(), carver.height());
-        // picture.show();
-        /*
-        int[] path = carver.findVerticalSeam();
-        for (int i = 0; i < carver.height(); i++)
-            System.out.print(String.format("%d ", path[i]));
-        */
-        /*
-        carver.printWorking();
-        int[] seam = new int[]{0, 0, 1, 0};
-        carver.removeVerticalSeam(seam);
-        carver.printWorking();
-        */
-        /*
-        carver.printArrary(carver.energy);
-        int[] seam = new int[]{0, 1, 2, 3, 4, 3};
-        carver.removeVerticalSeam(seam);
-        carver.printArrary(carver.energy);
-        */
+
+        for (int i = 0; i < 100; i++) {
+            int[] verticalSeam = carver.findVerticalSeam();
+            carver.removeVerticalSeam(verticalSeam);
+
+            int[] horizontalSeam = carver.findHorizontalSeam();
+            carver.removeHorizontalSeam(horizontalSeam);
+
+            carver.picture().show();
+        }
+
     }
 }
