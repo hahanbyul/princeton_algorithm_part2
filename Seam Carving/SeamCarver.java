@@ -1,38 +1,34 @@
 import edu.princeton.cs.algs4.Picture;
-import edu.princeton.cs.algs4.StdOut;
 import java.awt.Color;
 
 public class SeamCarver {
-    private static final boolean HORIZONTAL   = true;
-    private static final boolean VERTICAL     = false;
-
-    private Picture picture, working;
-    private int H, W;
+    private final Picture working;
+    private int height, width;
     private double[][] energy;
     private double[][] distTo;
     private int[][]    edgeTo;
     
     public SeamCarver(Picture picture) {               // create a seam carver object based on the given picture
-        this.picture = picture;                        // original image
-        this.working = new Picture(picture);           // picture copy
+        if (picture == null) throw new IllegalArgumentException();
 
-        H = picture.height();
-        W = picture.width();
+        working = new Picture(picture);           // picture copy
+        height = picture.height();
+        width = picture.width();
 
-        this.energy = new double[W][H];
-        this.distTo = new double[W][H];
-        this.edgeTo = new int[W][H];
+        energy = new double[width][height];
+        distTo = new double[width][height];
+        edgeTo = new int[width][height];
 
-        for (int row = 0; row < H; row++) {
-            for (int col = 0; col < W; col++) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
                 energy[col][row] = energy(col, row);
             }
         }
     }
     private void initializeDistTo() {
         // initialize distTo array
-        for (int row = 0; row < H; row++) {
-            for (int col = 0; col < W; col++) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
                 distTo[col][row] = Double.POSITIVE_INFINITY;
             }
         }
@@ -91,16 +87,16 @@ public class SeamCarver {
     }
 
     public     int width() {                           // width of current picture
-        return W;
+        return width;
     }
     
     public     int height() {                           // height of current picture
-        return H;
+        return height;
     }
     
     public  double energy(int x, int y) {               // energy of pixel at column x and row y
         if (x < 0 || x >= width() || y < 0 || y >= height())
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException();
 
         if (x == 0 || x == width()-1 || y == 0 || y == height()-1)  // border condition
             return 1000;
@@ -126,18 +122,18 @@ public class SeamCarver {
         updateDistToVertical();
 
         // find min val at the bottom line
-        double min_val = Double.POSITIVE_INFINITY;
-        int min_col = -1;
+        double minVal = Double.POSITIVE_INFINITY;
+        int minCol = -1;
         for (int col = 0; col < width(); col++) {
-            if (min_val > distTo[col][height()-1]) {
-                min_val = distTo[col][height()-1];
-                min_col = col;
+            if (minVal > distTo[col][height()-1]) {
+                minVal = distTo[col][height()-1];
+                minCol = col;
             }
         }
 
         // reconstruct path upward
         int[] path = new int[height()];
-        path[height()-1] = min_col;
+        path[height()-1] = minCol;
         for (int row = height()-2; row >= 0; row--) {
             path[row] = path[row+1] - edgeTo[path[row+1]][row+1];
         }
@@ -146,7 +142,14 @@ public class SeamCarver {
     }
 
     public    void removeVerticalSeam(int[] seam) {     // remove vertical seam from current picture
-        W--;
+        if (seam == null || seam.length != height) throw new IllegalArgumentException();
+        if (seam[0] < 0 || seam[0] > width()-1) throw new IllegalArgumentException();
+        for (int i = 1; i < height; i++) {
+            if (seam[i] < 0 || seam[i] > width()-1) throw new IllegalArgumentException();
+            if (Math.abs(seam[i] - seam[i-1]) > 1) throw new IllegalArgumentException();
+        }
+
+        width--;
 
         // shift working image
         for (int row = 0; row < height(); row++)
@@ -170,18 +173,18 @@ public class SeamCarver {
         updateDistToHorizontal();
         
         // find min val at the rightmost line
-        double min_val = Double.POSITIVE_INFINITY;
-        int min_row = -1;
+        double minVal = Double.POSITIVE_INFINITY;
+        int minRow = -1;
         for (int row = 0; row < height(); row++) {
-            if (min_val > distTo[width()-1][row]) {
-                min_val = distTo[width()-1][row];
-                min_row = row;
+            if (minVal > distTo[width()-1][row]) {
+                minVal = distTo[width()-1][row];
+                minRow = row;
             }
         }
 
         // reconstruct path backward
         int[] path = new int[width()];
-        path[width()-1] = min_row;
+        path[width()-1] = minRow;
         for (int col = width()-2; col >= 0; col--) {
             path[col] = path[col+1] - edgeTo[col+1][path[col+1]];
         }
@@ -190,7 +193,14 @@ public class SeamCarver {
     }
 
     public    void removeHorizontalSeam(int[] seam) {   // remove horizontal seam from current picture
-        H--;
+        if (seam == null || seam.length != width) throw new IllegalArgumentException();
+        if (seam[0] < 0 || seam[0] > height()-1) throw new IllegalArgumentException();
+        for (int i = 1; i < width; i++) {
+            if (seam[i] < 0 || seam[i] > height()-1) throw new IllegalArgumentException();
+            if (Math.abs(seam[i] - seam[i-1]) > 1) throw new IllegalArgumentException();
+        }
+
+        height--;
 
         // shift working image
         for (int col = 0; col < width(); col++)
@@ -209,7 +219,7 @@ public class SeamCarver {
         }
     }
 
-
+    /*
     private void printWorking() {
         System.out.println("working: ");
         for (int row = 0; row < height(); row++) {
@@ -219,7 +229,6 @@ public class SeamCarver {
         }
     }
 
-    /*
     private void printPicture() {
         System.out.println("picture: ");
         for (int row = 0; row < picture.height(); row++) {
