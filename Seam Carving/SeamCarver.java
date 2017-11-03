@@ -1,13 +1,13 @@
 import edu.princeton.cs.algs4.Picture;
-import java.awt.Color;
 import edu.princeton.cs.algs4.StdOut;
+import java.awt.Color;
 
 public class SeamCarver {
     private static final boolean HORIZONTAL   = true;
     private static final boolean VERTICAL     = false;
 
     private Picture picture, working;
-    int H, W;
+    private int H, W;
     private double[][] energy;
     private double[][] distTo;
     private int[][]    edgeTo;
@@ -210,7 +210,7 @@ public class SeamCarver {
     }
 
 
-    public void printWorking() {
+    private void printWorking() {
         System.out.println("working: ");
         for (int row = 0; row < height(); row++) {
             for (int col = 0; col < width(); col++)
@@ -219,6 +219,7 @@ public class SeamCarver {
         }
     }
 
+    /*
     private void printPicture() {
         System.out.println("picture: ");
         for (int row = 0; row < picture.height(); row++) {
@@ -228,12 +229,12 @@ public class SeamCarver {
         }
     }
 
-    public void printDistTo() {
+    private void printDistTo() {
         System.out.println("distTo: ");
         printArrary(distTo);
     }
 
-    public void printEnergy() {
+    private void printEnergy() {
         System.out.println("energy: ");
         printArrary(energy);
     }
@@ -245,6 +246,7 @@ public class SeamCarver {
             System.out.println();
         }
     }
+    */
     
     public static void main(String[] args) {
         // Picture picture = new Picture(args[0]);
