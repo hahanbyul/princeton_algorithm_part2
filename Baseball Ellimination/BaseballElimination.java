@@ -22,7 +22,9 @@ public class BaseballElimination {
         for (int i = 0; i < teamNum; i++)
             readLine(in, i);
 
-        System.out.println(Arrays.toString(w));
+        // System.out.println(Arrays.toString(w));
+        System.out.println(wins("Houston"));
+        System.out.println(losses("Houston"));
 
     }
 
@@ -43,13 +45,33 @@ public class BaseballElimination {
         return teamNum;
     }
 
-    /*
     public Iterable<String> teams() {                   // all teams
+        return Arrays.asList(team);
     }
+
+    private int teamIdx(String team) {
+        int i = 0;
+        for (i = 0; i < teamNum; i++) {
+            if (team.equals(this.team[i]))
+                break;
+        }
+        return i;
+    }
+
     public int wins(String team) {                      // number of wins for given team
+        int idx = teamIdx(team);
+        if (idx == teamNum) throw new IllegalArgumentException();
+        return w[idx];
+
     } 
+
     public int losses(String team) {                    // number of losses for given team
+        int idx = teamIdx(team);
+        if (idx == teamNum) throw new IllegalArgumentException();
+        return l[idx];
     }
+
+    /*
     public int remaining(String team) {                 // number of remaining games for given team 
     }
     public int against(String team1, String team2) {    // number of remaining games between team1 and team2
