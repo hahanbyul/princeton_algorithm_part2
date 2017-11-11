@@ -1,5 +1,9 @@
-import edu.princeton.cs.algs4.In;
 import java.util.Arrays;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.FlowNetwork;
+import edu.princeton.cs.algs4.FlowEdge;
+import edu.princeton.cs.algs4.FordFulkerson;
 
 public class BaseballElimination {
     private final int s = 0;
@@ -15,28 +19,6 @@ public class BaseballElimination {
 
     FlowNetwork G;
 
-    private void readFile(String filename) {
-        In in = new In(filename);
-        teamNum = in.readInt();
-        gameNum = (teamNum-1)*(teamNum-1)/2;
-
-        team = new String[teamNum];
-        wins = new int[teamNum];
-        losses = new int[teamNum];
-        remaining = new int[teamNum];
-        g = new int[teamNum][teamNum];
-
-        in.readLine(); // to remove spaces (no meaning)
-
-        for (int i = 0; i < teamNum; i++)
-            readLine(in, i);
-
-        // System.out.println(Arrays.toString(wins));
-        // System.out.println(wins("Houston"));
-        // System.out.println(losses("Houston"));
-
-    }
-
     private void readLine(In in, int i) {
         team[i] = in.readString();
         wins[i] = in.readInt();
@@ -47,10 +29,22 @@ public class BaseballElimination {
     }
 
     public BaseballElimination(String filename) {       // create a baseball division from given filename in format specified below
-        readFile(filename);
+        In in = new In(filename);
+        teamNum = in.readInt();
+        gameNum = (teamNum-1)*(teamNum-1)/2;
 
-        updateAddr(2);
+        team = new String[teamNum];
+        wins = new int[teamNum];
+        losses = new int[teamNum];
+        remaining = new int[teamNum];
+        g = new int[teamNum][teamNum];
 
+        for (int i = 0; i < teamNum; i++)
+            readLine(in, i);
+
+        // System.out.println(Arrays.toString(wins));
+        // System.out.println(wins("Houston"));
+        // System.out.println(losses("Houston"));
     }
 
     private void print2dArray(int[][] array) {
@@ -134,6 +128,14 @@ public class BaseballElimination {
         makeGraph(teamIdx);
         printAdjOfAll();
 
+        FordFulkerson ff = new FordFulkerson(G, s, t);
+        printAdjOfAll();
+
+        for (FlowEdge e : G.adj(s)) {
+            if (e.flow() != e.capacity())
+                return false;
+        }
+
         return true;
     }
 
@@ -192,9 +194,10 @@ public class BaseballElimination {
     */
 
     public static void main(String[] args) {
-        //BaseballElimination division = new BaseballElimination(args[0]);
-        BaseballElimination division = new BaseballElimination("baseball/teams4.txt");
-        division.isEliminated("Atlanta");
+        // BaseballElimination division = new BaseballElimination(args[0]);
+        BaseballElimination division = new BaseballElimination("baseball/teams5.txt");
+        StdOut.println(division.isEliminated("Detroit"));
+        StdOut.println(division.isEliminated("New_York"));
         /*
         for (String team : division.teams()) {
             if (division.isEliminated(team)) {
