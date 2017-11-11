@@ -2,14 +2,18 @@ import edu.princeton.cs.algs4.In;
 import java.util.Arrays;
 
 public class BaseballElimination {
-    private int teamNum;
+    private int teamNum, gameNum, vertexNum;
     private String[] team;
     private int[] w, l, r;
     private int[][] g;
 
+    private int[][] gameAddr;
+    private int[]   teamAddr;
+
     private void readFile(String filename) {
         In in = new In(filename);
         teamNum = in.readInt();
+        gameNum = (teamNum-1)*(teamNum-1)/2;
 
         team = new String[teamNum];
         w = new int[teamNum];
@@ -23,8 +27,8 @@ public class BaseballElimination {
             readLine(in, i);
 
         // System.out.println(Arrays.toString(w));
-        System.out.println(wins("Houston"));
-        System.out.println(losses("Houston"));
+        // System.out.println(wins("Houston"));
+        // System.out.println(losses("Houston"));
 
     }
 
@@ -39,6 +43,44 @@ public class BaseballElimination {
 
     public BaseballElimination(String filename) {       // create a baseball division from given filename in format specified below
         readFile(filename);
+
+        updateAddr(2);
+
+    }
+
+    private void print2dArray(int[][] array) {
+        for (int i = 0; i < array.length; i++)
+            print1dArray(array[i]);
+    }
+
+    private void print1dArray(int[] array) {
+        System.out.println(Arrays.toString(array));
+    }
+
+    private void updateAddr(int team) {
+        int V = teamNum;
+
+        gameAddr = new int[V][V];
+        int count = 2;          // offset: s, t
+        for (int i = 0; i < V; i++) {
+            if (i == team) continue;
+            for (int j = i+1; j < V; j++) {
+                if (j == team) continue;
+                gameAddr[i][j] = count;
+                count++;
+            }
+        }
+        print2dArray(gameAddr);
+
+        teamAddr = new int[V];
+        for (int i = 0; i < V; i++) {
+            if (i == team) continue;
+            teamAddr[i] = count; // offset: 2, gameNum
+            count++;
+        }
+        print1dArray(teamAddr);
+
+        vertexNum = count;
     }
 
     public int numberOfTeams() {                        // number of teams
