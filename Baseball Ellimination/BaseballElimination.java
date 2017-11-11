@@ -2,13 +2,18 @@ import edu.princeton.cs.algs4.In;
 import java.util.Arrays;
 
 public class BaseballElimination {
+    private final int s = 0;
+    private final int t = 1;
+
     private int teamNum, gameNum, vertexNum;
     private String[] team;
-    private int[] w, l, r;
+    private int[] wins, losses, remaining;
     private int[][] g;
 
     private int[][] gameAddr;
     private int[]   teamAddr;
+
+    FlowNetwork G;
 
     private void readFile(String filename) {
         In in = new In(filename);
@@ -16,9 +21,9 @@ public class BaseballElimination {
         gameNum = (teamNum-1)*(teamNum-1)/2;
 
         team = new String[teamNum];
-        w = new int[teamNum];
-        l = new int[teamNum];
-        r = new int[teamNum];
+        wins = new int[teamNum];
+        losses = new int[teamNum];
+        remaining = new int[teamNum];
         g = new int[teamNum][teamNum];
 
         in.readLine(); // to remove spaces (no meaning)
@@ -26,7 +31,7 @@ public class BaseballElimination {
         for (int i = 0; i < teamNum; i++)
             readLine(in, i);
 
-        // System.out.println(Arrays.toString(w));
+        // System.out.println(Arrays.toString(wins));
         // System.out.println(wins("Houston"));
         // System.out.println(losses("Houston"));
 
@@ -34,9 +39,9 @@ public class BaseballElimination {
 
     private void readLine(In in, int i) {
         team[i] = in.readString();
-        w[i] = in.readInt();
-        l[i] = in.readInt();
-        r[i] = in.readInt();
+        wins[i] = in.readInt();
+        losses[i] = in.readInt();
+        remaining[i] = in.readInt();
         for (int j = 0; j < teamNum; j++)
             g[i][j] = in.readInt();
     }
@@ -70,7 +75,6 @@ public class BaseballElimination {
                 count++;
             }
         }
-        print2dArray(gameAddr);
 
         teamAddr = new int[V];
         for (int i = 0; i < V; i++) {
@@ -78,7 +82,6 @@ public class BaseballElimination {
             teamAddr[i] = count; // offset: 2, gameNum
             count++;
         }
-        print1dArray(teamAddr);
 
         vertexNum = count;
     }
@@ -91,7 +94,7 @@ public class BaseballElimination {
         return Arrays.asList(team);
     }
 
-    private int teamIdx(String team) {
+    private int getTeamIdx(String team) {
         int i = 0;
         for (i = 0; i < teamNum; i++) {
             if (team.equals(this.team[i]))
@@ -101,32 +104,97 @@ public class BaseballElimination {
     }
 
     public int wins(String team) {                      // number of wins for given team
-        int idx = teamIdx(team);
+        int idx = getTeamIdx(team);
         if (idx == teamNum) throw new IllegalArgumentException();
-        return w[idx];
+        return wins[idx];
 
     } 
 
     public int losses(String team) {                    // number of losses for given team
-        int idx = teamIdx(team);
+        int idx = getTeamIdx(team);
         if (idx == teamNum) throw new IllegalArgumentException();
-        return l[idx];
+        return losses[idx];
+    }
+
+    public int remaining(String team) {                 // number of remaining games for given team 
+        return remaining[getTeamIdx(team)];
+    }
+
+    public int against(String team1, String team2) {    // number of remaining games between team1 and team2
+        return g[getTeamIdx(team1)][getTeamIdx(team2)];
+    }
+
+    public boolean isEliminated(String team) {          // is given team eliminated?
+        int teamIdx = getTeamIdx(team);
+        
+        updateAddr(teamIdx);
+        print2dArray(gameAddr);
+        print1dArray(teamAddr);
+
+        makeGraph(teamIdx);
+        printAdjOfAll();
+
+        return true;
+    }
+
+    private void makeGraph(int team) {
+        G = new FlowNetwork(vertexNum);
+        double capacity;
+        // add edge ending 't'
+        for (int i = 0; i < teamNum; i++) {
+            int v = teamAddr[i];
+            if (v == 0) continue;
+            capacity = wins[team] - wins[i] + remaining[team];
+            FlowEdge e = new FlowEdge(v, t, capacity);
+            G.addEdge(e);
+        }
+
+
+        // add edge starting 's'
+        for (int i = 0; i < teamNum; i++) {
+            for (int j = 0; j < teamNum; j++) {
+                int w = gameAddr[i][j];
+                if (w == 0) continue;
+
+                FlowEdge e = new FlowEdge(s, w, g[i][j]);
+                G.addEdge(e);
+
+                int v = w;
+                w = teamAddr[i];
+                e = new FlowEdge(v, w, Double.POSITIVE_INFINITY);
+                G.addEdge(e);
+
+                w = teamAddr[j];
+                e = new FlowEdge(v, w, Double.POSITIVE_INFINITY);
+                G.addEdge(e);
+            }
+        }
+    }
+
+    private void printAdjOfAll() {
+        for (int i = 0; i < vertexNum; i++)
+            printAdj(i);
+    }
+
+    private void printAdj(int v) {
+        System.out.print(String.format("vertex: %d -> ", v));
+
+        for (FlowEdge e : G.adj(v)) {
+            System.out.print(String.format("[%d, %d, %.0f, %.0f] -> ", e.from(), e.to(), e.capacity(), e.flow()));
+        }
+        System.out.println();
     }
 
     /*
-    public int remaining(String team) {                 // number of remaining games for given team 
-    }
-    public int against(String team1, String team2) {    // number of remaining games between team1 and team2
-    }
-    public boolean isEliminated(String team) {          // is given team eliminated?
-    }
     public Iterable<String> certificateOfElimination(String team) {  
         // subset R of teams that eliminates given team; null if not eliminated
     }
     */
 
     public static void main(String[] args) {
-        BaseballElimination division = new BaseballElimination(args[0]);
+        //BaseballElimination division = new BaseballElimination(args[0]);
+        BaseballElimination division = new BaseballElimination("baseball/teams4.txt");
+        division.isEliminated("Atlanta");
         /*
         for (String team : division.teams()) {
             if (division.isEliminated(team)) {
