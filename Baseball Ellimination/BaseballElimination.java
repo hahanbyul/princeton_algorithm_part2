@@ -88,7 +88,16 @@ public class BaseballElimination {
         return i;
     }
 
+    private boolean isInTeamList(String team) {
+        for (String t : teams()) {
+            if (t.equals(team))
+                return true;
+        }
+
+        return false;
+    }
     public int wins(String team) {                      // number of wins for given team
+        if (!isInTeamList(team)) throw new IllegalArgumentException();
         int idx = getTeamIdx(team);
         if (idx == teamNum) throw new IllegalArgumentException();
         return wins[idx];
@@ -96,20 +105,25 @@ public class BaseballElimination {
     } 
 
     public int losses(String team) {                    // number of losses for given team
+        if (!isInTeamList(team)) throw new IllegalArgumentException();
         int idx = getTeamIdx(team);
         if (idx == teamNum) throw new IllegalArgumentException();
         return losses[idx];
     }
 
     public int remaining(String team) {                 // number of remaining games for given team 
+        if (!isInTeamList(team)) throw new IllegalArgumentException();
         return remaining[getTeamIdx(team)];
     }
 
     public int against(String team1, String team2) {    // number of remaining games between team1 and team2
+        if (!isInTeamList(team1)) throw new IllegalArgumentException();
+        if (!isInTeamList(team2)) throw new IllegalArgumentException();
         return g[getTeamIdx(team1)][getTeamIdx(team2)];
     }
 
     private boolean isTriviallyEliminated(String team) {
+        if (!isInTeamList(team)) throw new IllegalArgumentException();
         isTrivial = new boolean[teamNum];
 
         boolean ret = false;
@@ -127,6 +141,7 @@ public class BaseballElimination {
     }
 
     public boolean isEliminated(String team) {          // is given team eliminated?
+        if (!isInTeamList(team)) throw new IllegalArgumentException();
         if (isTriviallyEliminated(team))
             return true;
 
@@ -184,11 +199,13 @@ public class BaseballElimination {
 
     public Iterable<String> certificateOfElimination(String team) {  
         // subset R of teams that eliminates given team; null if not eliminated
+        if (!isInTeamList(team)) throw new IllegalArgumentException();
+
         ArrayList<String> ret = new ArrayList<String>();
 
         if (isTriviallyEliminated(team)) {
             for (int i = 0; i < teamNum; i++) {
-                if (isTrivial[i]) ret.add(new String(this.team[i]));
+                if (isTrivial[i]) ret.add(this.team[i]);
             }
             return ret;
         } else if (isEliminated(team)) {
@@ -196,7 +213,7 @@ public class BaseballElimination {
                 int v = teamAddr[i];
                 if (v == 0) continue;
 
-                if (ff.inCut(v)) { ret.add(new String(this.team[i])); }
+                if (ff.inCut(v)) { ret.add(this.team[i]); }
             }
 
             return ret;
