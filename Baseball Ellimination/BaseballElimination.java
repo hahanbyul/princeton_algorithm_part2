@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.ArrayList;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.FlowNetwork;
@@ -18,6 +19,7 @@ public class BaseballElimination {
     private int[]   teamAddr;
 
     FlowNetwork G;
+    FordFulkerson ff;
 
     private void readLine(In in, int i) {
         team[i] = in.readString();
@@ -122,21 +124,23 @@ public class BaseballElimination {
         int teamIdx = getTeamIdx(team);
         
         updateAddr(teamIdx);
-        print2dArray(gameAddr);
-        print1dArray(teamAddr);
+        // print2dArray(gameAddr);
+        // print1dArray(teamAddr);
 
         makeGraph(teamIdx);
-        printAdjOfAll();
+        // printAdjOfAll();
 
-        FordFulkerson ff = new FordFulkerson(G, s, t);
-        printAdjOfAll();
+        ff = new FordFulkerson(G, s, t);
+        // printAdjOfAll();
 
+        boolean ret = false;
         for (FlowEdge e : G.adj(s)) {
-            if (e.flow() != e.capacity())
-                return false;
+            if (e.flow() != e.capacity()) {
+                ret = true;
+            }
         }
 
-        return true;
+        return ret;
     }
 
     private void makeGraph(int team) {
@@ -187,18 +191,27 @@ public class BaseballElimination {
         System.out.println();
     }
 
-    /*
     public Iterable<String> certificateOfElimination(String team) {  
         // subset R of teams that eliminates given team; null if not eliminated
+        ArrayList<String> ret = new ArrayList<String>();
+        if (isEliminated(team)) {
+            for (int i = 0; i < teamNum; i++) {
+                int v = teamAddr[i];
+                if (v == 0) continue;
+
+                if (ff.inCut(v)) { ret.add(new String(this.team[i])); }
+            }
+
+            return  ret;
+
+        } 
+        else { return null; }
     }
-    */
 
     public static void main(String[] args) {
-        // BaseballElimination division = new BaseballElimination(args[0]);
-        BaseballElimination division = new BaseballElimination("baseball/teams5.txt");
-        StdOut.println(division.isEliminated("Detroit"));
-        StdOut.println(division.isEliminated("New_York"));
-        /*
+        BaseballElimination division = new BaseballElimination(args[0]);
+        // BaseballElimination division = new BaseballElimination("baseball/teams5.txt");
+
         for (String team : division.teams()) {
             if (division.isEliminated(team)) {
                 StdOut.print(team + " is eliminated by the subset R = { ");
@@ -211,6 +224,5 @@ public class BaseballElimination {
                 StdOut.println(team + " is not eliminated");
             }
         }
-        */
     }
 }
