@@ -20,8 +20,8 @@ public class BaseballElimination {
 
     private boolean[] isTrivial;
 
-    FlowNetwork G;
-    FordFulkerson ff;
+    private FlowNetwork G;
+    private FordFulkerson ff;
 
     private void readLine(In in, int i) {
         team[i] = in.readString();
@@ -45,19 +45,6 @@ public class BaseballElimination {
 
         for (int i = 0; i < teamNum; i++)
             readLine(in, i);
-
-        // System.out.println(Arrays.toString(wins));
-        // System.out.println(wins("Houston"));
-        // System.out.println(losses("Houston"));
-    }
-
-    private void print2dArray(int[][] array) {
-        for (int i = 0; i < array.length; i++)
-            print1dArray(array[i]);
-    }
-
-    private void print1dArray(int[] array) {
-        System.out.println(Arrays.toString(array));
     }
 
     private void updateAddr(int team) {
@@ -146,14 +133,10 @@ public class BaseballElimination {
         int teamIdx = getTeamIdx(team);
         
         updateAddr(teamIdx);
-        // print2dArray(gameAddr);
-        // print1dArray(teamAddr);
 
         makeGraph(teamIdx);
-        // printAdjOfAll();
 
         ff = new FordFulkerson(G, s, t);
-        // printAdjOfAll();
 
         boolean ret = false;
         for (FlowEdge e : G.adj(s)) {
@@ -197,20 +180,6 @@ public class BaseballElimination {
                 G.addEdge(e);
             }
         }
-    }
-
-    private void printAdjOfAll() {
-        for (int i = 0; i < vertexNum; i++)
-            printAdj(i);
-    }
-
-    private void printAdj(int v) {
-        System.out.print(String.format("vertex: %d -> ", v));
-
-        for (FlowEdge e : G.adj(v)) {
-            System.out.print(String.format("[%d, %d, %.0f, %.0f] -> ", e.from(), e.to(), e.capacity(), e.flow()));
-        }
-        System.out.println();
     }
 
     public Iterable<String> certificateOfElimination(String team) {  
