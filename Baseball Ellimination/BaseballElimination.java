@@ -18,6 +18,8 @@ public class BaseballElimination {
     private int[][] gameAddr;
     private int[]   teamAddr;
 
+    private boolean[] isTrivial;
+
     FlowNetwork G;
     FordFulkerson ff;
 
@@ -120,7 +122,27 @@ public class BaseballElimination {
         return g[getTeamIdx(team1)][getTeamIdx(team2)];
     }
 
+    private boolean isTriviallyEliminated(String team) {
+        isTrivial = new boolean[teamNum];
+
+        boolean ret = false;
+        String theOtherTeam;
+        for (int i = 0; i < teamNum; i++) {
+            theOtherTeam = this.team[i];
+            if (wins(theOtherTeam) > wins(team) + remaining(team)) {
+                ret = true;
+                isTrivial[i] = true;
+            }
+
+        }
+
+        return ret;
+    }
+
     public boolean isEliminated(String team) {          // is given team eliminated?
+        if (isTriviallyEliminated(team))
+            return true;
+
         int teamIdx = getTeamIdx(team);
         
         updateAddr(teamIdx);
@@ -194,7 +216,13 @@ public class BaseballElimination {
     public Iterable<String> certificateOfElimination(String team) {  
         // subset R of teams that eliminates given team; null if not eliminated
         ArrayList<String> ret = new ArrayList<String>();
-        if (isEliminated(team)) {
+
+        if (isTriviallyEliminated(team)) {
+            for (int i = 0; i < teamNum; i++) {
+                if (isTrivial[i]) ret.add(new String(this.team[i]));
+            }
+            return ret;
+        } else if (isEliminated(team)) {
             for (int i = 0; i < teamNum; i++) {
                 int v = teamAddr[i];
                 if (v == 0) continue;
@@ -202,10 +230,9 @@ public class BaseballElimination {
                 if (ff.inCut(v)) { ret.add(new String(this.team[i])); }
             }
 
-            return  ret;
+            return ret;
 
-        } 
-        else { return null; }
+        } else { return null; }
     }
 
     public static void main(String[] args) {
