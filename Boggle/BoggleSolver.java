@@ -16,7 +16,11 @@ public class BoggleSolver {
     }
 
     private int getAddress(String st) {
-        if (st.length() == 1) return alphaToInt(st.charAt(0)) * R;
+        if (st.length() == 1)    return alphaToInt(st.charAt(0)) * R;
+        if (st.charAt(0) == 'Q') {
+            if (st.length() > 2) return alphaToInt('Q') * R + alphaToInt(st.charAt(2));
+            else return alphaToInt('Q') * R + alphaToInt('U');
+        }
         return alphaToInt(st.charAt(0)) * R + alphaToInt(st.charAt(1));
     }
 
@@ -40,6 +44,13 @@ public class BoggleSolver {
             firstTwo[addr].put(word, val);
             val++;
         }
+
+        for (int i = 0; i < R; i++) {
+            TST dict = firstTwo[alphaToInt('Q')*R + i];
+            if (dict == null) continue;
+            StdOut.print(String.format("%d: ", i));
+            printKeys(dict.keys());
+        }
     }
 
     private boolean isValidIndex(BoggleBoard board, int m, int n) {
@@ -49,9 +60,18 @@ public class BoggleSolver {
     }
 
     private void solve(BoggleBoard board, int m, int n) {
-        char[] ch = new char[2];
-        ch[0] = board.getLetter(m, n);
-        // StdOut.println(String.format("(%d, %d)", m, n));
+        char L = board.getLetter(m, n);
+        char[] ch;
+        if (L != 'Q') {
+            ch = new char[2];
+            ch[0] = L;
+        } else {
+            ch = new char[3];
+            ch[0] = 'Q';
+            ch[1] = 'U';
+        }
+
+        StdOut.println(String.format("(%d, %d): %c", m, n, ch[0]));
 
         visited[m][n] = true;
         for (int dm = -1; dm <= 1; dm++) {
@@ -63,13 +83,15 @@ public class BoggleSolver {
 
                 if (!isValidIndex(board, mm, nn)) continue;
 
-                ch[1] = board.getLetter(mm, nn);
+                if (L != 'Q') ch[1] = board.getLetter(mm, nn);
+                else          ch[2] = board.getLetter(mm, nn);
                 String s = new String(ch);
-
                 int addr = getAddress(s);
+
                 if (firstTwo[addr] == null) continue;
 
-                // StdOut.println(String.format("-> (%d, %d): %s", mm, nn, s));
+                StdOut.println(String.format("-> (%d, %d): %s", mm, nn, s));
+
                 visited[mm][nn] = true;
                 solve(board, firstTwo[addr], mm, nn, s);
                 visited[mm][nn] = false;
@@ -79,11 +101,11 @@ public class BoggleSolver {
     }
 
     private boolean solve(BoggleBoard board, TST dict, int m, int n, String s) {
-        // StdOut.println(String.format("---> (%d, %d): %s", m, n, s));
+        StdOut.println(String.format("---> (%d, %d): %s", m, n, s));
         if (s.length() > 2 && isInDictionary(dict, s)) { validWords.add(s); }
 
         Iterable<String> words = dict.keysWithPrefix(s);
-        // printKeys(words);
+        printKeys(words);
         if (!words.iterator().hasNext()) return false;
 
         for (int dm = -1; dm <= 1; dm++) {
