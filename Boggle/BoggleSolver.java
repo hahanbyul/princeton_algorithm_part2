@@ -45,12 +45,14 @@ public class BoggleSolver {
             val++;
         }
 
+        /*
         for (int i = 0; i < R; i++) {
             TST dict = firstTwo[alphaToInt('Q')*R + i];
             if (dict == null) continue;
             StdOut.print(String.format("%d: ", i));
             printKeys(dict.keys());
         }
+        */
     }
 
     private boolean isValidIndex(BoggleBoard board, int m, int n) {
@@ -71,7 +73,7 @@ public class BoggleSolver {
             ch[1] = 'U';
         }
 
-        StdOut.println(String.format("(%d, %d): %c", m, n, ch[0]));
+        // StdOut.println(String.format("(%d, %d): %c", m, n, ch[0]));
 
         visited[m][n] = true;
         for (int dm = -1; dm <= 1; dm++) {
@@ -87,10 +89,10 @@ public class BoggleSolver {
                 else          ch[2] = board.getLetter(mm, nn);
                 String s = new String(ch);
                 int addr = getAddress(s);
-
                 if (firstTwo[addr] == null) continue;
 
-                StdOut.println(String.format("-> (%d, %d): %s", mm, nn, s));
+                if (s.charAt(1) == 'Q') s += 'U';
+                // StdOut.println(String.format("-> (%d, %d): %s", mm, nn, s));
 
                 visited[mm][nn] = true;
                 solve(board, firstTwo[addr], mm, nn, s);
@@ -101,11 +103,11 @@ public class BoggleSolver {
     }
 
     private boolean solve(BoggleBoard board, TST dict, int m, int n, String s) {
-        StdOut.println(String.format("---> (%d, %d): %s", m, n, s));
+        // StdOut.println(String.format("---> (%d, %d): %s", m, n, s));
         if (s.length() > 2 && isInDictionary(dict, s)) { validWords.add(s); }
 
         Iterable<String> words = dict.keysWithPrefix(s);
-        printKeys(words);
+        // printKeys(words);
         if (!words.iterator().hasNext()) return false;
 
         for (int dm = -1; dm <= 1; dm++) {
@@ -117,7 +119,12 @@ public class BoggleSolver {
                 if (!isValidIndex(board, mm, nn) || visited[mm][nn]) continue;
 
                 visited[mm][nn] = true;
-                boolean ret = solve(board, dict, mm, nn, s + board.getLetter(mm, nn));
+
+                char L = board.getLetter(mm, nn);
+                String ss = s + L;
+                if (L == 'Q') ss += 'U';
+                solve(board, dict, mm, nn, ss);
+
                 visited[mm][nn] = false;
             }
         }
