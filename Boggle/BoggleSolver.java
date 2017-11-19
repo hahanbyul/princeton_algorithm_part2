@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.TST;
@@ -7,7 +8,7 @@ import edu.princeton.cs.algs4.TST;
 public class BoggleSolver {
     private final int R = 26;
     private TST[] firstTwo;
-    private HashSet validWords;
+    private TreeSet validWords;
     private boolean[][] visited;
 
     private int alphaToInt(char ch) {
@@ -33,22 +34,12 @@ public class BoggleSolver {
         int val = 0;
         for (String word : dictionary) {
             int addr = getAddress(word);
-            // StdOut.println(String.format("word: %s, addr: %d", word, addr));
 
             if (firstTwo[addr] == null) firstTwo[addr] = new TST();
 
             firstTwo[addr].put(word, val);
             val++;
         }
-
-        for (int i = 0; i < R*R; i++) {
-            if (firstTwo[i] == null) continue;
-            printKeys(firstTwo[i].keys());
-        }
-
-        StdOut.println(scoreOf("YOGI"));
-        StdOut.println(scoreOf("YOGE"));
-        StdOut.println(isInDictionary("YOGE"));
     }
 
     private boolean isValidIndex(BoggleBoard board, int m, int n) {
@@ -60,6 +51,7 @@ public class BoggleSolver {
     private void solve(BoggleBoard board, int m, int n) {
         char[] ch = new char[2];
         ch[0] = board.getLetter(m, n);
+        // StdOut.println(String.format("(%d, %d)", m, n));
 
         visited[m][n] = true;
         for (int dm = -1; dm <= 1; dm++) {
@@ -77,36 +69,43 @@ public class BoggleSolver {
                 int addr = getAddress(s);
                 if (firstTwo[addr] == null) continue;
 
+                // StdOut.println(String.format("-> (%d, %d): %s", mm, nn, s));
+                visited[mm][nn] = true;
                 solve(board, firstTwo[addr], mm, nn, s);
+                visited[mm][nn] = false;
             }
         }
         visited[m][n] = false;
     }
 
-    private void solve(BoggleBoard board, TST dict, int m, int n, String s) {
-        if (s.length() > 2 && isInDictionary(dict, s)) validWords.add(s); 
-        String longestWord = dict.longestPrefixOf(s);
-        if (longestWord == null || longestWord == s) return;
+    private boolean solve(BoggleBoard board, TST dict, int m, int n, String s) {
+        // StdOut.println(String.format("---> (%d, %d): %s", m, n, s));
+        if (s.length() > 2 && isInDictionary(dict, s)) { validWords.add(s); }
 
-        visited[m][n] = true;
+        Iterable<String> words = dict.keysWithPrefix(s);
+        // printKeys(words);
+        if (!words.iterator().hasNext()) return false;
 
         for (int dm = -1; dm <= 1; dm++) {
             for (int dn = -1; dn <= 1; dn++) {
+                if (dm == 0 && dn == 0) continue;
+
                 int mm = m + dm;
                 int nn = n + dn;
                 if (!isValidIndex(board, mm, nn) || visited[mm][nn]) continue;
 
-                solve(board, dict, mm, nn, s + board.getLetter(mm, nn));
+                visited[mm][nn] = true;
+                boolean ret = solve(board, dict, mm, nn, s + board.getLetter(mm, nn));
+                visited[mm][nn] = false;
             }
         }
 
-        visited[m][n] = false;
-
+        return true;
     }
 
     // Returns the set of all valid words in the given Boggle board, as an Iterable.
     public Iterable<String> getAllValidWords(BoggleBoard board) {
-        validWords = new HashSet<String>();
+        validWords = new TreeSet<String>();
         visited = new boolean[board.rows()][board.cols()];
 
         for (int m = 0; m < board.rows(); m++) {
