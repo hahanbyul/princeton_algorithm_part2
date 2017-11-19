@@ -14,10 +14,10 @@ public class BoggleSolver {
     }
 
     private int getAddress(String st) {
-        if (st.length() == 1)    return alphaToInt(st.charAt(0)) * R;
+        if (st.length() == 1)    { return alphaToInt(st.charAt(0)) * R; }
         if (st.charAt(0) == 'Q') {
-            if (st.length() > 2) return alphaToInt('Q') * R + alphaToInt(st.charAt(2));
-            else return alphaToInt('Q') * R + alphaToInt('U');
+            if (st.length() > 2) { return alphaToInt('Q') * R + alphaToInt(st.charAt(2)); }
+            else                 {return alphaToInt('Q') * R + alphaToInt('U'); }
         }
         return alphaToInt(st.charAt(0)) * R + alphaToInt(st.charAt(1));
     }
@@ -59,19 +59,15 @@ public class BoggleSolver {
         return true;
     }
 
-    private void solve(BoggleBoard board, int m, int n) {
-        char L = board.getLetter(m, n);
-        char[] ch;
-        if (L != 'Q') {
-            ch = new char[2];
-            ch[0] = L;
-        } else {
-            ch = new char[3];
-            ch[0] = 'Q';
-            ch[1] = 'U';
-        }
+    private String validateChar(char L) {
+        if (L != 'Q') { return "" + L; } 
+        else          { return "QU";   }  
+    }
 
-        // StdOut.println(String.format("(%d, %d): %c", m, n, ch[0]));
+    private void solve(BoggleBoard board, int m, int n) {
+        String ch1 = validateChar(board.getLetter(m, n));
+
+        // StdOut.println(String.format("(%d, %d): %s", m, n, ch1));
 
         visited[m][n] = true;
         for (int dm = -1; dm <= 1; dm++) {
@@ -83,17 +79,15 @@ public class BoggleSolver {
 
                 if (!isValidIndex(board, mm, nn)) continue;
 
-                if (L != 'Q') ch[1] = board.getLetter(mm, nn);
-                else          ch[2] = board.getLetter(mm, nn);
-                String s = new String(ch);
-                int addr = getAddress(s);
+                String ch2 = validateChar(board.getLetter(mm, nn));
+
+                int addr = getAddress(ch1 + ch2);
                 if (firstTwo[addr] == null) continue;
 
-                if (s.charAt(1) == 'Q') s += 'U';
-                // StdOut.println(String.format("-> (%d, %d): %s", mm, nn, s));
+                // StdOut.println(String.format("-> (%d, %d): %s", mm, nn, ch1 + ch2));
 
                 visited[mm][nn] = true;
-                solve(board, firstTwo[addr], mm, nn, s);
+                solve(board, firstTwo[addr], mm, nn, ch1 + ch2);
                 visited[mm][nn] = false;
             }
         }
@@ -118,9 +112,7 @@ public class BoggleSolver {
 
                 visited[mm][nn] = true;
 
-                char L = board.getLetter(mm, nn);
-                String ss = s + L;
-                if (L == 'Q') ss += 'U';
+                String ss = s + validateChar(board.getLetter(mm, nn));
                 solve(board, dict, mm, nn, ss);
 
                 visited[mm][nn] = false;
