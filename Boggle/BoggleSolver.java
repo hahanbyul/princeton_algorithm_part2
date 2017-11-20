@@ -137,6 +137,7 @@ public class BoggleSolver {
     }
 
     private boolean isInDictionary(TST dict, String word) {
+        if (dict == null || word == null) return false;
         return dict.get(word) != null;
     }
 
