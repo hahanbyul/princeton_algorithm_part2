@@ -3,20 +3,21 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class CircularSuffixArray {
     private TST<Integer> tst;
-    private String str;
     private int length;
 
     // circular suffix array of s
     public CircularSuffixArray(String s) {
+        if (s == null) throw new IllegalArgumentException();
         length = s.length();
-        str = s;
         tst = new TST<Integer>();
         for (int i = 0; i < length; i++) {
             tst.put(ithString(s, i), i);
         }
 
+        /*
         for (int i = 0; i < length(); i++)
             StdOut.println(String.format("index[%d]: %d", i, index(i)));
+        */
     }
 
     private String ithString(String s, int i) {
@@ -39,6 +40,7 @@ public class CircularSuffixArray {
 
     // returns index of ith sorted suffix
     public int index(int i) {
+        if (i < 0 || i > length()-1) throw new IllegalArgumentException();
         return tst.get(sortedIthString(i));
     }
 
