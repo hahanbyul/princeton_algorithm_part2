@@ -1,11 +1,11 @@
 import java.util.Arrays;
 import java.util.Comparator;
-import edu.princeton.cs.algs4.StdOut;
+// import edu.princeton.cs.algs4.StdOut;
 
 public class CircularSuffixArray {
-    private Integer[] index;
-    private String s;
-    private Comparator<Integer> cmp = new Comparator<Integer>() {
+    private final Integer[] index;
+    private final String s;
+    private final Comparator<Integer> cmp = new Comparator<Integer>() {
         @Override
         public int compare(Integer a, Integer b) {
             int i;
@@ -52,6 +52,6 @@ public class CircularSuffixArray {
 
     // unit testing of the methods (optional)
     public static void main(String[] args) {
-        CircularSuffixArray csa = new CircularSuffixArray("ABRACADABRA!");
+        // CircularSuffixArray csa = new CircularSuffixArray("ABRACADABRA!");
     }
 }

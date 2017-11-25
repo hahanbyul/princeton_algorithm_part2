@@ -1,38 +1,39 @@
 import java.util.LinkedList;
 import edu.princeton.cs.algs4.BinaryStdIn;
 import edu.princeton.cs.algs4.BinaryStdOut;
-import edu.princeton.cs.algs4.StdOut;
+// import edu.princeton.cs.algs4.StdOut;
 
 public class MoveToFront {
     private static final int R = 256;
-    private static LinkedList<Character> orderedList;
 
-    private static void initializeOrderedList() {
-        orderedList = new LinkedList<Character>();
+    private static LinkedList<Character> initializeOrderedList() {
+        LinkedList<Character> linkedList = new LinkedList<Character>();
         for (char i = 0; i < R; i++)
-            orderedList.add(i);
+            linkedList.add(i);
+
+        return linkedList;
     }
 
     // apply move-to-front encoding, reading from standard input and writing to standard output
     public static void encode() {
-        initializeOrderedList();
+        LinkedList<Character> linkedList = initializeOrderedList();
 
         while (!BinaryStdIn.isEmpty()) {
-            char index = (char) orderedList.indexOf(BinaryStdIn.readChar());
+            char index = (char) linkedList.indexOf(BinaryStdIn.readChar());
             BinaryStdOut.write(index);
-            orderedList.addFirst(orderedList.remove(index));
+            linkedList.addFirst(linkedList.remove(index));
         }
         BinaryStdOut.flush();
     }
 
     // apply move-to-front decoding, reading from standard input and writing to standard output
     public static void decode() {
-        initializeOrderedList();
+        LinkedList<Character> linkedList = initializeOrderedList();
 
         while (!BinaryStdIn.isEmpty()) {
-            char ch = orderedList.remove((int) BinaryStdIn.readChar());
+            char ch = linkedList.remove((int) BinaryStdIn.readChar());
             BinaryStdOut.write(ch);
-            orderedList.addFirst(ch);
+            linkedList.addFirst(ch);
         }
         BinaryStdOut.flush();
     }
