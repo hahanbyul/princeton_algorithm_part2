@@ -30,6 +30,8 @@ public class BurrowsWheeler {
 
     private static int[] computeNext(String lastChar, char[] firstChar) {
         int length = lastChar.length();
+        if (length == 1) return new int[]{0};
+
         int[] next = new int[length];
 
         int i = 0;
