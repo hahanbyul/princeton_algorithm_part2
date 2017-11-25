@@ -1,23 +1,25 @@
-import edu.princeton.cs.algs4.TST;
 import edu.princeton.cs.algs4.StdOut;
 
 public class CircularSuffixArray {
-    private TST<Integer> tst;
-    private int length;
+    private int[] index;
 
     // circular suffix array of s
     public CircularSuffixArray(String s) {
         if (s == null) throw new IllegalArgumentException();
-        length = s.length();
-        tst = new TST<Integer>();
-        for (int i = 0; i < length; i++) {
-            tst.put(ithString(s, i), i);
-        }
+
+        index = new int[s.length()];
 
         /*
         for (int i = 0; i < length(); i++)
             StdOut.println(String.format("index[%d]: %d", i, index(i)));
         */
+    }
+
+    // exchange index[i] and index[j]
+    private void exch(int i, int j) {
+        int swap = index[i];
+        index[i] = index[j];
+        index[j] = swap;
     }
 
     private String ithString(String s, int i) {
