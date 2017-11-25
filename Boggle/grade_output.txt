@@ -1,0 +1,356 @@
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  FAILED (0 errors, 10 warnings)
+API:          PASSED
+
+Findbugs:     FAILED (2 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (0 errors, 4 warnings)
+
+Correctness:  13/13 tests passed
+Memory:       3/3 tests passed
+Timing:       5/9 tests passed
+
+Aggregate score: 86.11%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+5.6K Nov 20 03:55 BoggleSolver.java
+
+
+********************************************************************************
+*  COMPILING                                                                    
+********************************************************************************
+
+
+% javac BoggleSolver.java
+*-----------------------------------------------------------
+BoggleSolver.java:8: warning: [rawtypes] found raw type: TST
+    private TST[] firstTwo;
+            ^
+  missing type arguments for generic class TST<Value>
+  where Value is a type-variable:
+    Value extends Object declared in class TST
+BoggleSolver.java:9: warning: [rawtypes] found raw type: TreeSet
+    private TreeSet validWords;
+            ^
+  missing type arguments for generic class TreeSet<E>
+  where E is a type-variable:
+    E extends Object declared in class TreeSet
+BoggleSolver.java:34: warning: [rawtypes] found raw type: TST
+        firstTwo = new TST[R*R];
+                       ^
+  missing type arguments for generic class TST<Value>
+  where Value is a type-variable:
+    Value extends Object declared in class TST
+BoggleSolver.java:40: warning: [rawtypes] found raw type: TST
+            if (firstTwo[addr] == null) firstTwo[addr] = new TST();
+                                                             ^
+  missing type arguments for generic class TST<Value>
+  where Value is a type-variable:
+    Value extends Object declared in class TST
+BoggleSolver.java:42: warning: [unchecked] unchecked call to put(String,Value) as a member of the raw type TST
+            firstTwo[addr].put(word, val);
+                              ^
+  where Value is a type-variable:
+    Value extends Object declared in class TST
+BoggleSolver.java:97: warning: [rawtypes] found raw type: TST
+    private boolean solve(BoggleBoard board, TST dict, int m, int n, String s) {
+                                             ^
+  missing type arguments for generic class TST<Value>
+  where Value is a type-variable:
+    Value extends Object declared in class TST
+BoggleSolver.java:99: warning: [unchecked] unchecked call to add(E) as a member of the raw type TreeSet
+        if (s.length() > 2 && isInDictionary(dict, s)) { validWords.add(s); }
+                                                                       ^
+  where E is a type-variable:
+    E extends Object declared in class TreeSet
+BoggleSolver.java:101: warning: [unchecked] unchecked conversion
+        Iterable<String> words = dict.keysWithPrefix(s);
+                                                    ^
+  required: Iterable<String>
+  found:    Iterable
+BoggleSolver.java:136: warning: [unchecked] unchecked conversion
+        return validWords;
+               ^
+  required: Iterable<String>
+  found:    TreeSet
+BoggleSolver.java:139: warning: [rawtypes] found raw type: TST
+    private boolean isInDictionary(TST dict, String word) {
+                                   ^
+  missing type arguments for generic class TST<Value>
+  where Value is a type-variable:
+    Value extends Object declared in class TST
+10 warnings
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+BoggleSolver:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS                                       
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+L P UPM_UNCALLED_PRIVATE_METHOD UPM: The private method 'printKeys()' is never called.  At BoggleSolver.java:[lines 26-29]
+M P SS_SHOULD_BE_STATIC SS: The instance variable 'R' is final and initialized to a compile-time constant. Should it also be static?  At BoggleSolver.java:[line 7]
+Warnings generated: 2
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+BoggleSolver.java:7: This instance variable should be turned into a class constant by adding the 'static' modifier. [FinalFieldCouldBeStatic]
+BoggleSolver.java:8: The private instance (or static) variable 'firstTwo' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
+BoggleSolver.java:25: Avoid unused private methods, such as 'printKeys(Iterable)'. [UnusedPrivateMethod]
+PMD ends with 3 warnings.
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[WARN] BoggleSolver.java:7:23: The instance variable 'R' must start with a lowercase letter and use camelCase. [MemberName]
+[WARN] BoggleSolver.java:20:35: 'return' is not preceded with whitespace. [WhitespaceAround]
+[WARN] BoggleSolver.java:20:35: '{' is not followed by whitespace. [WhitespaceAround]
+[WARN] BoggleSolver.java:33:5: Define constructors after static and instance variables but before methods. [DeclarationOrder]
+Checkstyle ends with 0 errors and 4 warnings.
+
+
+================================================================
+
+
+********************************************************************************
+*  TESTING CORRECTNESS
+********************************************************************************
+
+Testing correctness of BoggleSolver
+*-----------------------------------------------------------
+Tests 1-9 create one BoggleSolver object corresponding to the specified
+dictionary and call getAllValidWords() with several different boards
+as arguments.
+
+Running 13 total tests.
+
+Test 1: check getAllValidWords() on two fixed 4-by-4 boards given in assignment
+  * dictionary = dictionary-algs4.txt; board = board4x4.txt
+  * dictionary = dictionary-algs4.txt; board = board-q.txt
+==> passed
+
+Test 2: check getAllValidWords() on fixed 4-by-4 boards
+  * dictionary = dictionary-yawl.txt; board = board4x4.txt
+  * dictionary = dictionary-yawl.txt; board = board-points1.txt
+  * dictionary = dictionary-yawl.txt; board = board-points2.txt
+  * dictionary = dictionary-yawl.txt; board = board-points3.txt
+  * dictionary = dictionary-yawl.txt; board = board-points4.txt
+  * dictionary = dictionary-yawl.txt; board = board-points5.txt
+==> passed
+
+Test 3: check getAllValidWords() on more fixed 4-by-4 boards
+  * dictionary = dictionary-yawl.txt; board = board-points100.txt
+  * dictionary = dictionary-yawl.txt; board = board-points200.txt
+  * dictionary = dictionary-yawl.txt; board = board-points300.txt
+  * dictionary = dictionary-yawl.txt; board = board-points400.txt
+  * dictionary = dictionary-yawl.txt; board = board-points500.txt
+  * dictionary = dictionary-yawl.txt; board = board-points750.txt
+  * dictionary = dictionary-yawl.txt; board = board-points1000.txt
+  * dictionary = dictionary-yawl.txt; board = board-points1250.txt
+  * dictionary = dictionary-yawl.txt; board = board-points1500.txt
+  * dictionary = dictionary-yawl.txt; board = board-points2000.txt
+==> passed
+
+Test 4: check getAllValidWords() on random Hasbro boards
+  * dictionary = dictionary-yawl.txt; board = 10 random Hasbro boards
+  * dictionary = dictionary-yawl.txt; board = 50 random Hasbro boards
+  * dictionary = dictionary-yawl.txt; board = 100 random Hasbro boards
+==> passed
+
+Test 5: check getAllValidWords() on high-scoring n-by-n boards
+  * dictionary = dictionary-yawl.txt; board = board-points4410.txt
+  * dictionary = dictionary-yawl.txt; board = board-points4527.txt
+  * dictionary = dictionary-yawl.txt; board = board-points13464.txt
+  * dictionary = dictionary-yawl.txt; board = board-points26539.txt
+==> passed
+
+Test 6: check getAllValidWords() on exotic boards
+  * dictionary = dictionary-yawl.txt; board = board-dodo.txt
+  * dictionary = dictionary-yawl.txt; board = board-noon.txt
+  * dictionary = dictionary-yawl.txt; board = board-couscous.txt
+  * dictionary = dictionary-yawl.txt; board = board-rotavator.txt
+  * dictionary = dictionary-yawl.txt; board = board-estrangers.txt
+  * dictionary = dictionary-yawl.txt; board = board-antidisestablishmentarianisms.txt
+  * dictionary = dictionary-yawl.txt; board = board-dichlorodiphenyltrichloroethanes.txt
+  * dictionary = dictionary-yawl.txt; board = board-pneumonoultramicroscopicsilicovolcanoconiosis.txt
+==> passed
+
+Test 7: check getAllValidWords() on boards with a Q
+  * dictionary = dictionary-yawl.txt; board = board-qwerty.txt
+  * dictionary = dictionary-yawl.txt; board = board-quinquevalencies.txt
+  * dictionary = dictionary-yawl.txt; board = board-inconsequentially.txt
+  * dictionary = dictionary-yawl.txt; board = board-qaimaqam.txt
+  * dictionary = dictionary-yawl.txt; board = board-aqua.txt
+  * dictionary = dictionary-yawl.txt; board = 100 random Hasbro boards
+  * dictionary = dictionary-16q.txt; board = board-9q.txt
+  * dictionary = dictionary-16q.txt; board = board-16q.txt
+==> passed
+
+Test 8: check getAllValidWords() on random m-by-n boards
+  * dictionary = dictionary-common.txt; board = 100 random 3-by-3 boards
+  * dictionary = dictionary-common.txt; board = 100 random 4-by-4 boards
+  * dictionary = dictionary-common.txt; board = 100 random 5-by-5 boards
+  * dictionary = dictionary-common.txt; board = 20 random 5-by-10 boards
+  * dictionary = dictionary-common.txt; board = 20 random 10-by-5 boards
+==> passed
+
+Test 9: check getAllValidWords() on random m-by-n boards
+  * dictionary = dictionary-common.txt; board = 10 random 2-by-2 boards
+  * dictionary = dictionary-common.txt; board = 10 random 1-by-10 boards
+  * dictionary = dictionary-common.txt; board = 10 random 10-by-1 boards
+  * dictionary = dictionary-common.txt; board = 10 random 1-by-1 boards
+  * dictionary = dictionary-common.txt; board = 10 random 1-by-2 boards
+  * dictionary = dictionary-common.txt; board = 10 random 2-by-1 boards
+==> passed
+
+Test 10: check getAllValidWords() on boards with no valid words
+  * dictionary = dictionary-nursery.txt; board = board-points0.txt
+  * dictionary = dictionary-2letters.txt; board = board-points4410.txt
+==> passed
+
+Test 11: mutating dictionary[] after passing to BoggleSolver constructor
+  * dictionary = dictionary-algs4.txt
+  * dictionary = dictionary-algs4.txt; board = board4x4.txt
+  * dictionary = dictionary-algs4.txt; board = 10 random Hasbro boards
+==> passed
+
+Test 12: create more than one BoggleSolver object at a time
+         [ BoggleSolver object 1 uses dictionary-algs4.txt   ]
+         [ BoggleSolver object 2 uses dictionary-nursery.txt ]
+  * dictionary = dictionary-algs4.txt; board = 10 random Hasbro boards
+  * dictionary = dictionary-nursery.txt; board = 10 random Hasbro boards
+  * dictionary = dictionary-algs4.txt; board = 10 random Hasbro boards
+==> passed
+
+Test 13: check scoreOf() on various dictionaries
+  * dictionary = dictionary-algs4.txt
+  * dictionary = dictionary-common.txt
+  * dictionary = dictionary-shakespeare.txt
+  * dictionary = dictionary-nursery.txt
+  * dictionary = dictionary-yawl.txt
+==> passed
+
+
+Total: 13/13 tests passed!
+
+
+================================================================
+********************************************************************************
+*  MEMORY
+********************************************************************************
+
+Analyzing memory of BoggleSolver
+*-----------------------------------------------------------
+Running 3 total tests.
+
+Test 1: memory with dictionary-algs4.txt (must be <= 2x reference solution)
+  * memory of dictionary[]           = 494472 bytes
+  * memory of student   BoggleSolver = 1146400 bytes
+  * memory of reference BoggleSolver = 5135408 bytes
+  * student / reference              = 0.22
+==> passed
+
+Test 2: memory with dictionary-shakespeare.txt (must be <= 2x reference solution)
+  * memory of dictionary[]           = 1925392 bytes
+  * memory of student   BoggleSolver = 3888360 bytes
+  * memory of reference BoggleSolver = 17478032 bytes
+  * student / reference              = 0.22
+==> passed
+
+Test 3: memory with dictionary-yawl.txt (must be <= 2x reference solution)
+  * memory of dictionary[]           = 22595744 bytes
+  * memory of student   BoggleSolver = 39242976 bytes
+  * memory of reference BoggleSolver = 179312256 bytes
+  * student / reference              = 0.22
+==> passed
+
+
+Total: 3/3 tests passed!
+
+================================================================
+
+
+
+********************************************************************************
+*  TIMING
+********************************************************************************
+
+Timing BoggleSolver
+*-----------------------------------------------------------
+All timing tests are for random 4-by-4 boards (using the Hasbro dice).
+The dictionary is specified with each test.
+
+Running 9 total tests.
+
+Test 1: timing constructor (must be <= 5x reference solution)
+ *  dictionary-algs4.txt
+    - student   solution time (in seconds): 0.01
+    - reference solution time (in seconds): 0.01
+    - ratio:                                1.46
+
+==> passed
+
+ *  dictionary-enable2k.txt
+    - student   solution time (in seconds): 0.07
+    - reference solution time (in seconds): 0.09
+    - ratio:                                0.77
+
+==> passed
+
+ *  dictionary-yawl.txt
+    - student   solution time (in seconds): 0.07
+    - reference solution time (in seconds): 0.10
+    - ratio:                                0.70
+
+==> passed
+
+ *  dictionary-zingarelli2005.txt
+    - student   solution time (in seconds): 0.22
+    - reference solution time (in seconds): 0.07
+    - ratio:                                3.17
+
+==> passed
+
+Test 2: timing getAllValidWords() for 5.0 seconds using dictionary-yawl.txt
+        (must be <= 2x reference solution)
+    - reference solution calls per second: 8594.85
+    - student   solution calls per second: 127.97
+    - reference / student ratio:           67.16
+
+=> passed    student <= 10000x reference
+=> FAILED    student <=    25x reference
+=> FAILED    student <=    10x reference
+=> FAILED    student <=     5x reference
+=> FAILED    student <=     2x reference
+
+
+Total: 5/9 tests passed!
+
+
+================================================================
+

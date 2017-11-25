@@ -1,0 +1,303 @@
+See the Assessment Guide for information on how to interpret this report.
+
+ASSESSMENT SUMMARY
+
+Compilation:  PASSED
+API:          PASSED
+
+Findbugs:     FAILED (4 warnings)
+PMD:          PASSED
+Checkstyle:   FAILED (0 errors, 13 warnings)
+
+Correctness:  15/15 tests passed
+Memory:       4/4 tests passed
+Timing:       1/1 tests passed
+
+Aggregate score: 100.00%
+[Compilation: 5%, API: 5%, Findbugs: 0%, PMD: 0%, Checkstyle: 0%, Correctness: 60%, Memory: 10%, Timing: 20%]
+
+ASSESSMENT DETAILS
+
+The following files were submitted:
+----------------------------------
+7.2K Nov 12 14:27 BaseballElimination.java
+
+
+********************************************************************************
+*  COMPILING                                                                    
+********************************************************************************
+
+
+% javac BaseballElimination.java
+*-----------------------------------------------------------
+
+
+================================================================
+
+
+Checking the APIs of your programs.
+*-----------------------------------------------------------
+BaseballElimination:
+
+================================================================
+
+
+********************************************************************************
+*  CHECKING STYLE AND COMMON BUG PATTERNS                                       
+********************************************************************************
+
+
+% findbugs *.class
+*-----------------------------------------------------------
+L D FE_FLOATING_POINT_EQUALITY FE: Tests for exact floating-point equality. Because floating-point calculations may involve rounding, the calculated values may be imprecise.  At BaseballElimination.java:[line 158]
+M P URF_UNREAD_FIELD UrF: The instance (or static) variable 'gameNum' is never read. Consider removing it from the class.  At BaseballElimination.java:[line 38]
+M P SS_SHOULD_BE_STATIC SS: The instance variable 's' is final and initialized to a compile-time constant. Should it also be static?  At BaseballElimination.java:[line 10]
+M P SS_SHOULD_BE_STATIC SS: The instance variable 't' is final and initialized to a compile-time constant. Should it also be static?  At BaseballElimination.java:[line 11]
+Warnings generated: 4
+
+
+================================================================
+
+
+% pmd .
+*-----------------------------------------------------------
+BaseballElimination.java:10: This instance variable should be turned into a class constant by adding the 'static' modifier. [FinalFieldCouldBeStatic]
+BaseballElimination.java:11: This instance variable should be turned into a class constant by adding the 'static' modifier. [FinalFieldCouldBeStatic]
+BaseballElimination.java:13: Avoid unused private instance (or static) variables, such as 'gameNum'. [UnusedPrivateField]
+BaseballElimination.java:13: Can you replace the instance (or static) variable 'gameNum' with a local variable? [SingularField]
+BaseballElimination.java:13: The private instance (or static) variable 'gameNum' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
+BaseballElimination.java:13: The private instance (or static) variable 'teamNum' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
+PMD ends with 6 warnings.
+
+
+================================================================
+
+
+% checkstyle *.java
+*-----------------------------------------------------------
+[WARN] BaseballElimination.java:35:5: Define constructors after static and instance variables but before methods. [DeclarationOrder]
+[WARN] BaseballElimination.java:50:33: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:51:13: The local variable 'V' must start with a lowercase letter and use camelCase. [LocalVariableName]
+[WARN] BaseballElimination.java:82:35: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:91:41: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:92:21: The local (or parameter) variable 't' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:99:28: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:107:30: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:114:33: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:125:50: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:143:40: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:166:32: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+[WARN] BaseballElimination.java:200:61: The local (or parameter) variable 'team' has the same name as an instance variable. Use a different name. [HiddenField]
+Checkstyle ends with 0 errors and 13 warnings.
+
+
+================================================================
+
+
+********************************************************************************
+*  TESTING CORRECTNESS
+********************************************************************************
+
+Testing correctness of BaseballElimination
+*-----------------------------------------------------------
+Running 15 total tests.
+
+Test 1: check calls to numberOfTeams()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 2: check calls to teams()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 3: check calls to wins()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 4: check calls to losses()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 5: check calls to remaining()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 6: check calls to against()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 7: check calls to isEliminated()
+  * teams4.txt
+  * teams4a.txt
+  * teams4b.txt
+  * teams5.txt
+  * teams5a.txt
+  * teams5b.txt
+  * teams5c.txt
+  * teams7.txt
+  * teams8.txt
+  * teams10.txt
+  * teams12.txt
+  * teams24.txt
+  * teams29.txt
+  * teams30.txt
+  * teams32.txt
+  * teams36.txt
+  * teams42.txt
+  * teams48.txt
+  * teams12-allgames.txt
+==> passed
+
+Test 8: check that isEliminated() is consistent with certificateOfElimination()
+  * teams4.txt
+  * teams5.txt
+  * teams8.txt
+  * teams10.txt
+  * teams29.txt
+  * teams48.txt
+==> passed
+
+Test 9: check calls to certificateOfElimination()
+  * teams4.txt
+  * teams4a.txt
+  * teams4b.txt
+  * teams5.txt
+  * teams5a.txt
+  * teams5b.txt
+  * teams5c.txt
+  * teams7.txt
+  * teams8.txt
+  * teams10.txt
+  * teams12.txt
+  * teams24.txt
+  * teams29.txt
+  * teams30.txt
+  * teams32.txt
+  * teams36.txt
+  * teams42.txt
+  * teams48.txt
+  * teams12-allgames.txt
+==> passed
+
+Test 10: only 1 team in division
+  * teams1.txt
+  * teams1.txt
+  * teams1.txt
+  * teams1.txt
+  * teams1.txt
+  * teams1.txt
+  * teams1.txt
+==> passed
+
+Test 11: check immutability by calling certificateOfElimination() both before
+         and after calling isEliminated() and verifying that the results match
+  * teams4.txt
+  * teams5.txt
+  * teams29.txt
+==> passed
+
+Test 12: check that certificateOfElimination() returns null
+  * teams4.txt
+  * teams5.txt
+==> passed
+
+Test 13: check for invalid arguments
+  * teams4.txt
+  * teams5.txt
+==> passed
+
+Test 14: check for dependence on reference equality of strings
+==> passed
+
+Test 15: check that two Baseball objects can be created at the same time
+  * teams4.txt and teams5.txt
+  * teams5.txt and teams7.txt
+==> passed
+
+
+Total: 15/15 tests passed!
+
+
+================================================================
+********************************************************************************
+*  TIMING
+********************************************************************************
+
+Timing BaseballElimination
+*-----------------------------------------------------------
+Running 1 total tests.
+
+    n   constructor isEliminated() + certificateOfElimination()
+----------------------------------------------------------------
+   30       0.01       0.81
+   36       0.00       1.09
+   42       0.00       2.24
+   48       0.00       4.50
+   54       0.00       7.82
+   60       0.00      13.19
+time = 3.91e-07 * n^4.20  (R^2 = 0.97)
+
+Total: 1/1 tests passed!
+
+
+================================================================
+
+
+
+********************************************************************************
+*  MEMORY
+********************************************************************************
+
+Analyzing memory of BaseballElimination
+*-----------------------------------------------------------
+Running 4 total tests.
+
+Student   vertices     = 0.50 n^2 - 0.50 n + 2.00   (R^2 = 1.000)
+Reference vertices     = 0.50 n^2 - 0.50 n + 3.00   (R^2 = 1.000)
+=> passed
+
+Student   edges        = 1.50 n^2 - 3.50 n + 2.00   (R^2 = 1.000)
+Reference edges        = 1.50 n^2 - 3.50 n + 2.00   (R^2 = 1.000)
+=> passed
+
+Student   memory of G  = 176.00 n^2 - 384.00 n + 344.00   (R^2 = 1.000)
+Reference memory of G  = 176.00 n^2 - 384.00 n + 384.00   (R^2 = 1.000)
+=> passed
+
+Student   memory       = 188.51 n^2 - 227.94 n + 782.43   (R^2 = 1.000)
+Reference memory       = 3.99 n^2 + 222.25 n + 396.00   (R^2 = 1.000)
+=> passed
+
+Total: 4/4 tests passed!
+
+================================================================
