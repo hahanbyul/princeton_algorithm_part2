@@ -1,13 +1,37 @@
+import java.util.Arrays;
+import java.util.Comparator;
 import edu.princeton.cs.algs4.StdOut;
 
 public class CircularSuffixArray {
-    private int[] index;
+    private Integer[] index;
+    private String s;
+    private Comparator<Integer> cmp = new Comparator<Integer>() {
+        @Override
+        public int compare(Integer a, Integer b) {
+            int i;
+
+            // increase i until chars to compare are different
+            for (i = 0; i < length(); i++)
+                if (charAt(a+i) != charAt(b+i)) break;
+
+            return charAt(a+i) - charAt(b+i);
+        }
+
+        private char charAt(int i) {
+            return s.charAt(i % length());
+        }
+    };
 
     // circular suffix array of s
     public CircularSuffixArray(String s) {
         if (s == null) throw new IllegalArgumentException();
+        this.s = s;
 
-        index = new int[s.length()];
+        index = new Integer[s.length()];
+        for (int i = 0; i < index.length; i++)
+            index[i] = i;
+
+        Arrays.sort(index, cmp);
 
         /*
         for (int i = 0; i < length(); i++)
@@ -15,35 +39,15 @@ public class CircularSuffixArray {
         */
     }
 
-    // exchange index[i] and index[j]
-    private void exch(int i, int j) {
-        int swap = index[i];
-        index[i] = index[j];
-        index[j] = swap;
-    }
-
-    private String ithString(String s, int i) {
-        return s.substring(i) + s.substring(0,i);
-    }
-
-    private String sortedIthString(int i) {
-        int cnt = 0;
-        for (String s : tst.keys()) {
-            if (cnt == i) return s;
-            cnt++;
-        }
-        return null;
-    }
-
     // length of s
     public int length() {
-        return length;
+        return index.length;
     }
 
     // returns index of ith sorted suffix
     public int index(int i) {
         if (i < 0 || i > length()-1) throw new IllegalArgumentException();
-        return tst.get(sortedIthString(i));
+        return index[i];
     }
 
     // unit testing of the methods (optional)
